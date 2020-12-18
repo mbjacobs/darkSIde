@@ -5,6 +5,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import { MaterialCommunityIcons } from '@expo/vector-icons'; 
 import { getDataModel } from './DataModel';
 
+//Code adapted from SI 669 Homework 5.
 
 export class LoginScreen extends React.Component {
   constructor(props) {
@@ -174,10 +175,10 @@ export class LoginScreen extends React.Component {
 }
 
 const colors = {
-  primary: '#7986CB', // MD Amber 500
-  primaryDark: '#303F9F', // MD Brown 300
-  primaryLight: '#E8EAF6', // MD Amber 200
-  outline: '#BDBDBD' // MD Gray 400
+  primary: '#7986CB', 
+  primaryDark: '#303F9F', 
+  primaryLight: '#E8EAF6',
+  outline: '#BDBDBD' 
 }
 
 const loginStyles = StyleSheet.create({
@@ -199,13 +200,12 @@ const loginStyles = StyleSheet.create({
         justifyContent: 'center',
         width: '50%',
         height: '50%',
-        paddingTop: '5%',
         resizeMode: 'contain',
       },
       title : {
         fontSize: 28,
         color: 'white',
-        opacity: 0.7,
+        opacity: 0.8,
         marginBottom: "5%"
       }, 
     middleView: {
@@ -213,6 +213,8 @@ const loginStyles = StyleSheet.create({
       justifyContent: 'center',
       alignItems: 'center',
       width: '100%',
+      paddingBottom: "8%",
+      paddingTop: "2%"
     },
       inputRow: {
         flexDirection: 'row',
@@ -224,8 +226,10 @@ const loginStyles = StyleSheet.create({
           flex: 0.3,
           justifyContent: 'flex-end',
           paddingRight: 5,
-          textAlign: 'right',
-          fontSize: 10
+          textAlign: 'left',
+          fontSize: 16,
+          color: "white"
+
         },
         inputText: {
           flex: 0.5,
@@ -233,9 +237,10 @@ const loginStyles = StyleSheet.create({
           paddingLeft: 5,
           borderBottomWidth: 1,
           fontSize: 18,
+          color: "white"
         },
       bottomView: {
-        flex: 0.2,
+        flex: 0.1,
         flexDirection: 'row',
         width: '100%',
         justifyContent: 'center',
@@ -244,10 +249,10 @@ const loginStyles = StyleSheet.create({
         buttonContainer: {
           justifyContent: 'center',
           alignItems: 'center',
-          borderWidth: 1,
+          borderWidth: 2,
           borderRadius: 6,
           backgroundColor: "#A4B3B6",
-          borderColor: "#A4B3B6",
+          borderColor: "white",
           width: 100,
           height: 50,
           marginLeft: "1%",

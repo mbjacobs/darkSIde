@@ -13,6 +13,10 @@ export class QuizScreen extends React.Component {
     this.currentUser = this.props.route.params.currentUser;
     let allDarkPatterns = this.dataModel.getDarkPatterns();
 
+    if (this.props.route.params.restart) {
+      console.log(this.props.route.params.restart)
+    }
+
     this.state = {
       darkPatterns: allDarkPatterns,
       currentCardIndex: Math.floor(Math.random() * allDarkPatterns.length - 1) + 1, //Randomize first card
@@ -36,7 +40,15 @@ export class QuizScreen extends React.Component {
   componentDidUpdate = () => {
     console.log("in componentDidUpdate")
     console.log("Card index:", this.state.currentCardIndex)
-
+    if (this.props.route.params.restart) {
+      this.resetQuiz();
+    } else if (this.state.numQuestionsAnswered === this.state.darkPatterns.length) {
+      this.props.navigation.navigate('QuizResults', 
+      {currentUser: this.currentUser, 
+        correctAnswers: this.state.numQuestionsCorrect,
+        totalAnswers: this.state.numQuestionsAnswered
+      })
+    }
     // if (this.state.currentCardIndex !== 0) {
     //   this.setState({
     //     question: this.state.darkPatterns[this.state.currentCardIndex].description,
@@ -90,6 +102,15 @@ export class QuizScreen extends React.Component {
 
   completeQuiz = () => {
 
+  }
+
+  resetQuiz = async () => {
+    this.setState({
+      numQuestionsAnswered: 0,
+      numQuestionsCorrect: 0
+    });
+    await this.shuffleCard();
+    this.setQuizData();
   }
 
   setQuizData = () => {
@@ -258,10 +279,13 @@ export class QuizScreen extends React.Component {
       height: 160,
       width: 233,
       borderRadius: 5,
-      padding: "5%"
+      paddingTop: "4%",
+      paddingBottom: "4%",
+      paddingLeft: "4%",
+      paddingRight: "4%",
     },
     question_text: {
-      fontSize: 16,
+      fontSize: 14,
     },
     quiz_options_container: {
       display: "flex",

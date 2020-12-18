@@ -5,6 +5,45 @@ import { Container, Content, Footer, Button } from 'native-base';
 import { FooterBar } from './FooterBar';
 import { getDataModel } from './DataModel';
 
+class Score {
+  constructor(s) {
+      this.score = s;
+      this.key = s;
+  }
+}
+
+function getQuizScores() {
+  let quizScores = [];
+  let fakeScores = [20, 80, 100];
+  for (let i = 0;i < fakeScores.length; i++) {
+    console.log(fakeScores[i])
+    quizScores.push(new Score(fakeScores[i]));
+  }    
+  return quizScores;
+}
+
+class QuizScore extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      score: props.score,
+    }
+  }
+
+  render() {
+    return (
+      <View style={styles.itemContainer}>
+        <View style={styles.itemRankContainer}>
+            <Text style={styles.itemRank}>Date</Text>
+        </View>
+        <View style={styles.itemTextContainer}>
+          <Text numberOfLines={1} ellipsizeMode="tail" style={styles.itemTitle}>{this.props.score}</Text>
+        </View>
+      </View>
+    );
+  }
+}
+
 class Scoreboard extends React.Component {
   constructor(props) {
     super (props);
@@ -19,8 +58,8 @@ class Scoreboard extends React.Component {
           <FlatList
             data={this.temp}
             renderItem={({item})=>
-              <Text>{item}</Text>
-            }
+              <QuizScore score={item.score} key={item.key}/>
+          }
           />
         </View>
       </View>
@@ -36,7 +75,7 @@ export class QuizResultsScreen extends React.Component {
     this.correctAnswers = this.props.route.params.correctAnswers;
     this.totalAnswers = this.props.route.params.totalAnswers;
     this.totalScore = Math.ceil(this.correctAnswers / this.totalAnswers * 100);
-    this.temp = [20, 80, 100];
+    this.quizScoreArray = getQuizScores();
   }
 
     render() {
@@ -46,11 +85,14 @@ export class QuizResultsScreen extends React.Component {
                 <Content>
                 <View>
                   <Text style={[styles.screenText, styles.titleMargins]}>Quiz Results</Text>
-                  <View style={styles.category_button_container}>
-                    <Text style={styles.screenText}>Percent Correct: {this.totalScore} %</Text>
+                  <View style={styles.quiz_results_container}>
+                    <Text style={styles.screenText}>Percent Correct: {this.totalScore}%</Text>
                     <Text style={styles.screenText}>Answers Correct: {this.correctAnswers} / {this.totalAnswers}</Text>
+                    <Scoreboard temp={this.quizScoreArray}></Scoreboard>
                   </View>
-                  <Scoreboard temp={this.temp}></Scoreboard>
+                  <TouchableOpacity style={styles.button}>
+                    <Text style={styles.buttonText} onPress={() => this.props.navigation.navigate('Quiz', {currentUser: this.currentUser, restart: true})}>Retake Quiz</Text>
+                  </TouchableOpacity>
                 </View>
               </Content>
               </ImageBackground>
@@ -96,5 +138,21 @@ export class QuizResultsScreen extends React.Component {
     titleMargins: {
       marginTop: 20,
       marginBottom: 30,
+    },
+    quiz_results_container: {
+      backgroundColor: "#A4B3B6",
+      borderRadius: 10,
+      margin: "5%",
+      padding: "5%"
+    },
+    button: {
+      backgroundColor: '#7151AB',
+      padding: 5,
+      margin: "5%",
+      borderRadius: 10,
+    },
+    buttonText: {
+      color: 'white',
+      textAlign: 'center',
     },
   });
