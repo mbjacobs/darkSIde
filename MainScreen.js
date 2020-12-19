@@ -1,6 +1,6 @@
 import React from 'react';
 import { ImageBackground, StyleSheet, Text, View, Image} from 'react-native';
-import { Container, Content, Footer, Button } from 'native-base';
+import { Container, Content } from 'native-base';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { FooterBar } from './FooterBar';
 

@@ -1,16 +1,14 @@
 import React from 'react';
 import { StyleSheet, Text, View,
-      TextInput, Switch, Image, KeyboardAvoidingView } from 'react-native';
+      TextInput, Image, KeyboardAvoidingView } from 'react-native';
 import {Container, Content, Footer, Button} from 'native-base';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { FooterBar } from './FooterBar';
 import { getDataModel } from './DataModel';
 
-
 export class DatabaseScreen extends React.Component {
     constructor(props) {
       super(props);
-      
       let currentUser = this.props.route.params.currentUser;
       console.log(currentUser)
     }
