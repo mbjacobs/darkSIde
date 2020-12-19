@@ -1,6 +1,5 @@
 import React from 'react';
-import { ImageBackground, StyleSheet, Text, View,
-      TextInput, Switch, Image, KeyboardAvoidingView, StatusBar} from 'react-native';
+import { ImageBackground, StyleSheet, Text, View, Image} from 'react-native';
 import { Container, Content, Footer, Button } from 'native-base';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { FooterBar } from './FooterBar';
@@ -95,8 +94,6 @@ export class MainScreen extends React.Component {
       backgroundColor: "#A4B3B6",
       marginLeft: "5%",
       marginRight: "5%",
-      // marginTop: "3%",
-      // marginBottom: "3%",
       borderRadius: 10
     },
     category_icon: {

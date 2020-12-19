@@ -9,10 +9,12 @@ class DataModel {
         firebase.initializeApp(firebaseConfig);
       }
       this.usersRef = firebase.firestore().collection('users');
+      this.quizResultsRef = firebase.firestore().collection('quiz-results');
       this.darkPatternsRef = firebase.firestore().collection('dark-patterns');
       this.storageRef = firebase.storage().ref();
       this.users = [];
       this.darkPatterns = [];
+      this.quizResults = [];
       this.asyncInit();
     }
   
@@ -39,7 +41,7 @@ class DataModel {
         data.key = key;
         this.darkPatterns.push(data);
       });
-    }
+    }  
   
     getUsers = () => {
       return this.users;
@@ -48,25 +50,40 @@ class DataModel {
     getDarkPatterns = () => {
       return this.darkPatterns;
     }
+
+    getQuizResults = async (userID) => {
+      let querySnap = await this.usersRef.doc(userID).collection('quizResults').orderBy('date').get();
+      querySnap.forEach(qDocSnap => {
+          let quizResultsObj = qDocSnap.data();
+          quizResultsObj.key = qDocSnap.id;
+          this.quizResults.push(quizResultsObj);
+        });
+      return this.quizResults;
+    }
   
     createUser = async (email, pass, dispName) => {
-      // assemble the data structure
       let newUser = {
         email: email,
         password: pass,
-        displayName: dispName
+        displayName: dispName,
       }
-  
-      // add the data to Firebase (user collection)
       let newUserDocRef = await this.usersRef.add(newUser);
-  
-      // get the new Firebase ID and save it as the local "key"
       let key = newUserDocRef.id;
+
       newUser.key = key;
       this.users.push(newUser);
       return newUser;
     }
-  
+
+    addScore =  async (userID, userResults) => {
+      let quizResultsRef = this.usersRef.doc(userID).collection('quizResults');
+      let quizResultsObject = {
+        score: userResults.score,
+        date: userResults.timestamp
+      }
+      quizResultsRef.add(quizResultsObject);
+    }
+
     getUserForID = (id) => {
       for (let user of this.users) {
         if (user.key === id) {

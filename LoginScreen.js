@@ -6,7 +6,6 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { getDataModel } from './DataModel';
 
 //Code adapted from SI 669 Homework 5.
-
 export class LoginScreen extends React.Component {
   constructor(props) {
     super(props);

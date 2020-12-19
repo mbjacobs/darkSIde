@@ -1,8 +1,7 @@
 import React from 'react';
-import { ImageBackground, StyleSheet, Text, View,
-      TextInput, Switch, Image, KeyboardAvoidingView, StatusBar} from 'react-native';
+import { ImageBackground, StyleSheet, Text, View, Image } from 'react-native';
 import { Container, Content, Footer, Button } from 'native-base';
-import { Ionicons, Entypo, EvilIcons } from '@expo/vector-icons';
+import { Entypo } from '@expo/vector-icons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { FooterBar } from './FooterBar';
 
@@ -11,7 +10,6 @@ import { getDataModel } from './DataModel';
 class Card extends React.Component {
   constructor(props) {
     super(props);
-
     this.state = {
       index: this.props.index,
       frontSide: this.props.name,
@@ -19,7 +17,6 @@ class Card extends React.Component {
       isFlipped: false
     }
   }
-
   componentDidUpdate () {
     if (this.props.index !== this.state.index) {
       this.setState({
@@ -29,7 +26,6 @@ class Card extends React.Component {
       });
     }
   }
-
    flipCard = () => {
     let temp = this.state.frontSide;
     this.setState({
@@ -39,7 +35,6 @@ class Card extends React.Component {
       isFlipped: !this.state.isFlipped
     })
   }
-
   render() {
     return (
       <TouchableOpacity style={styles.card} onPress={this.flipCard}>
@@ -53,10 +48,7 @@ export class DictionaryScreen extends React.Component {
   constructor(props) {
     super(props);
     this.dataModel = getDataModel();
-
-    this.currentUser = this.props.route.params.currentUser;
-    console.log(this.currentUser)
-    
+    this.currentUser = this.props.route.params.currentUser;    
     let allDarkPatterns = this.dataModel.getDarkPatterns();
 
     this.state = {

@@ -13,35 +13,30 @@ export class QuizScreen extends React.Component {
     this.currentUser = this.props.route.params.currentUser;
     let allDarkPatterns = this.dataModel.getDarkPatterns();
 
-    if (this.props.route.params.restart) {
-      console.log(this.props.route.params.restart)
-    }
-
     this.state = {
       darkPatterns: allDarkPatterns,
       currentCardIndex: Math.floor(Math.random() * allDarkPatterns.length - 1) + 1, //Randomize first card
       answerChoices: ["None", "None", "None"],
       question: "",
       numQuestionsAnswered: 0,
-      numQuestionsCorrect: 0
+      numQuestionsCorrect: 0,
+      isReset: false
     }
   }
 
   componentDidMount = () => {
-    console.log("in componentDidMount")
-    console.log("Card index at start:", this.state.currentCardIndex)
     if (this.state.numQuestionsAnswered === 0) {
       this.setQuizData();
-      console.log("Card index after setQuizData:", this.state.currentCardIndex);
     }
-    console.log("Card index at end:", this.state.currentCardIndex);
   }
 
   componentDidUpdate = () => {
-    console.log("in componentDidUpdate")
-    console.log("Card index:", this.state.currentCardIndex)
-    if (this.props.route.params.restart) {
+    if (this.props.route.params.restart === true && this.state.isReset === false) {
+      this.setState({
+        isReset: true
+      })
       this.resetQuiz();
+      this.setQuizData();
     } else if (this.state.numQuestionsAnswered === this.state.darkPatterns.length) {
       this.props.navigation.navigate('QuizResults', 
       {currentUser: this.currentUser, 
@@ -49,59 +44,32 @@ export class QuizScreen extends React.Component {
         totalAnswers: this.state.numQuestionsAnswered
       })
     }
-    // if (this.state.currentCardIndex !== 0) {
-    //   this.setState({
-    //     question: this.state.darkPatterns[this.state.currentCardIndex].description,
-    //   });
-    // }
   }
 
   shuffleCard = async () => {
-    console.log("in shuffleCard")
-    console.log("Card index at start:", this.state.currentCardIndex);
-    console.log(this.state.darkPatterns.length)
     let randIndex = Math.floor(Math.random() * this.state.darkPatterns.length - 1) + 1;
-    console.log("Rand index: ", randIndex)
     this.setState({
       currentCardIndex: randIndex,
       cardNumber: randIndex + 1
     });
-    console.log("Card index at end:", this.state.currentCardIndex)
-    console.log("Card name:", this.state.darkPatterns[this.state.currentCardIndex].name)
   }
 
   advanceQuiz = async (selectedAnswer) => {
-    console.log("in advanceQuiz")
-    console.log("Card index at start:", this.state.currentCardIndex)
-    //Score answer
-    console.log("Selected answer:", selectedAnswer);
+    //Score answer to question
     await this.scoreAnswer(selectedAnswer);
-
-    console.log("Num correct: ", this.state.numQuestionsCorrect)
-    console.log("Num answered: ", this.state.numQuestionsAnswered)
-
-    
-    //Update the counters for number of questions correct and answered
-
-    //Checks whether all quiz questions have been answered.
-    //If the index of the current quiz question is equal to the total number of quiz questions, 
-    //perform final calculations and route to the Quiz Results screen.
+    //Check whether all quiz questions have been answered. 
+    //If so, calculate score and navigate to results, else, refresh data for next question.
     if (this.state.numQuestionsAnswered === this.state.darkPatterns.length) {
-      this.props.navigation.navigate('QuizResults', {currentUser: this.currentUser, 
+      await this.onCalculateResults();
+      this.props.navigation.navigate('QuizResults', 
+        {currentUser: this.currentUser, 
         correctAnswers: this.state.numQuestionsCorrect,
         totalAnswers: this.state.numQuestionsAnswered
       })
     } else {
-      console.log("Card index:", this.state.currentCardIndex)
       await this.shuffleCard();
-      console.log("Card index:", this.state.currentCardIndex)
       this.setQuizData();
     }
-    console.log("Card index at end:", this.state.currentCardIndex);
-  }
-
-  completeQuiz = () => {
-
   }
 
   resetQuiz = async () => {
@@ -110,32 +78,21 @@ export class QuizScreen extends React.Component {
       numQuestionsCorrect: 0
     });
     await this.shuffleCard();
-    this.setQuizData();
   }
 
   setQuizData = () => {
-    console.log("in setQuizData");
-    console.log("Card index at start:", this.state.currentCardIndex);
     this.setQuestion();
     this.setAnswerChoices();
-    console.log("Card index at end:", this.state.currentCardIndex);
   }
 
   setQuestion = () => {
-    console.log("in setQuestion");
-    console.log("Card index at start:", this.state.currentCardIndex);
-    console.log("Card name:", this.state.darkPatterns[this.state.currentCardIndex].name);
-
     let quizQuestion = this.state.darkPatterns[this.state.currentCardIndex].description;
     this.setState({
       question: quizQuestion,
-    },  this.setAnswerChoices());
-    console.log("Card index at end:", this.state.currentCardIndex);
+    });
   }
 
   setAnswerChoices = () => {
-    console.log("in setAnswerChoices");
-    console.log("Card index at start:", this.state.currentCardIndex);
     let newAnswerChoices = [];
     let tempDarkPatterns = this.state.darkPatterns;
     //Ensure one of the answer choices is the correct answer
@@ -151,33 +108,37 @@ export class QuizScreen extends React.Component {
         i--; //Make the loop run again because answer choice was not valid
       }
     }
-    
     //Shuffle the array to randomize the order of the answer choices
     newAnswerChoices.sort(() => Math.random() - 0.5)
-    
     this.setState({
       answerChoices: newAnswerChoices
     })
-    console.log("Card index at end:", this.state.currentCardIndex);
   }
 
   scoreAnswer = async (selectedAnswer) => {
-    console.log("In scoreAnswer")
-    console.log("Card index at start: ", this.state.currentCardIndex)
-    console.log(this.state.darkPatterns[this.state.currentCardIndex].name)
-    console.log(selectedAnswer)
     let newNumQuestionsCorrect = this.state.numQuestionsCorrect;
     if (selectedAnswer === this.state.darkPatterns[this.state.currentCardIndex].name) {
       newNumQuestionsCorrect += 1;
-      console.log({newNumQuestionsCorrect})
     }
-
+    //Update the counters for number of questions correct and answered
     this.setState({
       numQuestionsCorrect: newNumQuestionsCorrect,
       numQuestionsAnswered: this.state.numQuestionsAnswered + 1
-    }, console.log(this.state.numQuestionsCorrect))
+    })
+  }
 
-    console.log("Card index at end: ", this.state.currentCardIndex)
+  onCalculateResults =  async () => {
+    let totalScore = Math.ceil(this.state.numQuestionsCorrect / this.state.numQuestionsAnswered * 100);
+    let quizResultsData = {
+      score: totalScore,
+      timestamp: Date.now(),
+    }
+    //Write final score to database
+    await this.dataModel.addScore(this.currentUser.key, quizResultsData);
+
+    this.setState({
+      isReset: false
+    })
   }
 
   render() {
@@ -223,7 +184,6 @@ export class QuizScreen extends React.Component {
           </View>
         </Content>
       </ImageBackground>
-      {/* <FooterBar/> */}
       <Footer style={styles.footer}>
         <Button transparent onPress={() => this.props.navigation.navigate('Main', {currentUser: this.currentUser})}>
           <Image source={require('./icons/icons8-home-30.png')}/>  

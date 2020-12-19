@@ -54,20 +54,5 @@ export class DatabaseScreen extends React.Component {
       opacity: 0.5,
       justifyContent: 'space-evenly',
       alignItems: 'center'
-    },
-    english_greeting: {
-      backgroundColor: '#808080',
-      color: '#f5c2cb',
-      fontSize: 28
-    },
-    spanish_greeting: {
-      backgroundColor: '#000000',
-      color: '#377e22',
-      fontSize: 52
-    },
-    german_greeting: {
-      backgroundColor: '#fffd54',
-      color: '#000a7b',
-      fontSize: 42
     }
   });
